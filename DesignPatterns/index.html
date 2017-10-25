@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Design Patterns</title>
+  <!-- Singleton -->
+  <script src="Singleton/Singleton.js"></script>
+  <script src="Singleton/Client.js"></script>
+  <!-- Strategy -->
+  <script src="Strategy/SortingStrategy.js"></script>
+  <script src="Strategy/QuickSort.js"></script>
+  <script src="Strategy/MergeSort.js"></script>
+  <script src="Strategy/BubbleSort.js"></script>
+  <script src="Strategy/DataSet.js"></script>
+  <!-- Observer -->
+  <script src="Observer/Observer.js"></script>
+  <script src="Observer/Subject.js"></script>
+  <script src="Observer/ConcreteObserver.js"></script>
+  <script src="Observer/ConcreteSubject.js"></script>
+  <script src="Observer/TheEconomy.js"></script>
+  <script src="Observer/Optimist.js"></script>
+  <script src="Observer/Pessimist.js"></script>
+  <!-- Chain of responsibility -->
+  <script src="ChainOfResponsibility/Handler.js"></script>
+  <script src="ChainOfResponsibility/ConcreteHandler1.js"></script>
+  <script src="ChainOfResponsibility/ConcreteHandler2.js"></script>
+  <script src="ChainOfResponsibility/ConcreteHandler3.js"></script>
+</head>
+<body>
+  <div id="log"></div>
+</body>
+<script>
+  (function () {
+    var old = console.log;
+    var logger = document.getElementById('log');
+    console.log = function (message) {
+      if (typeof message == 'object') {
+        logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+      } else {
+        logger.innerHTML += message + '<br />';
+      }
+    }
+  })();
+  // Singleton
+  console.log("==== Singleton Pattern ====");
+  console.log("");
+  var c = new Client() ;
+  c.runTest() ;
+
+  // Strategy
+  console.log("");
+  console.log("==== Strategy Pattern ====");
+  console.log("");
+  var dataset = new DataSet() ; // defaults to BubbleSort
+  dataset.display();
+  dataset.doSort();
+  dataset.display();
+  dataset.resetData();
+  dataset.display();
+  dataset.changeStrategy( new MergeSort() );
+  dataset.doSort();
+  dataset.display();
+  dataset.resetData();
+  dataset.display();
+  dataset.changeStrategy( new QuickSort() );
+  dataset.doSort();
+  dataset.display();
+
+  // Observer
+  console.log("");
+  console.log("==== Observer Pattern ====");
+  console.log("");
+  function ObserverTest() {
+    this.runTest = function() {
+      var s = new TheEconomy();
+      var p = new Pessimist(s);
+      var o = new Optimist(s);
+      s.attach(p);
+      s.attach(o);
+      s.setState("The New iPad is out today");
+      p.showState();
+      o.showState();
+      s.setState("Hey, Its Friday!");
+      p.showState();
+      o.showState();
+    };
+
+    this.runTest();
+  }
+  ObserverTest();
+
+
+  //Chain of responsibility
+  console.log("");
+  console.log("==== Chain of Responsibility Pattern ====");
+  console.log("");
+  var h1 = new ConcreteHandler1() ;
+  var h2 = new ConcreteHandler2() ;
+  var h3 = new ConcreteHandler3() ;
+
+  h1.setSuccessor(h2);
+  h2.setSuccessor(h3);
+
+  console.log( "Sending R2...");
+  h1.handleRequest("R2");
+  console.log( "Sending R3...");
+  h1.handleRequest("R3");
+  console.log( "Sending R1...");
+  h1.handleRequest("R1");
+  console.log( "Sending RX...");
+  h1.handleRequest("RX");
+</script>
+</html>
